@@ -8,7 +8,7 @@
 - Label masks are constructed using the labels(with images as key and annotations as value) were provided.
 - Binary Cross Entropy along with Dice Loss is used as a criterion for minimization.
 - The validation Dice Metric that is achieved is ~0.96 
-- Now, the cv2 find contours method is used recursively to obtain the bounding boxes for all the *artefacts* and whichever channel bears the maximum value ( with model.eval() and then acting model on the input image))  for that bounding region, that channel is the classification result(text, bar_code or qr_code).  
+-  After the model is trained to obtain a dice metric of ~0.96 the checkpoint is saved(link below). In inference, the cv2 find contours method is used recursively to obtain the bounding boxes for all the *artefacts* of the test image and whichever channel bears the maximum value(i.e the output- segmentation head of trained model consists of 3 channels dedicated to the 3 classes of text, bar and qr_code each) for that bounding region, that channel is the classification result(text, bar_code or qr_code).  
 
 ## Training and Validation:
 
