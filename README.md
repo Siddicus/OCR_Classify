@@ -20,7 +20,25 @@ Using the function *cv2contour()* in predict.py, bounding boxes for artefacts ar
 <img src="https://raw.githubusercontent.com/Siddicus/OCR_Classify/master/sad.JPG" >
 
 ## Input - Output
-
+- Default argument text_on_plot is True for the function *inference*
+```
+localization,image_array=inference(test_dataloader,text_on_plot=False)
+for i in image_array:
+    figure(figsize=(20, 44), dpi=50)
+    plt.imshow(i)
+    plt.show()
+``` 
 <img src="https://raw.githubusercontent.com/Siddicus/OCR_Classify/master/ocr.JPG" >
 
 <img src="https://raw.githubusercontent.com/Siddicus/OCR_Classify/master/ocr2.JPG" >
+
+- text_on_plot=True returns:
+```
+localization,image_array=inference(test_dataloader,text_on_plot=True)
+for i in image_array:
+    figure(figsize=(20, 44), dpi=50)
+    plt.imshow(i)
+    plt.show()
+``` 
+
+<img src="https://raw.githubusercontent.com/Siddicus/OCR_Classify/master/plottrue.JPG" >
