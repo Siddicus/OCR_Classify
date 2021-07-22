@@ -109,7 +109,8 @@ def main(args):
     # script arguments are accessible as follows:
     
     img_path = args.img_path
-    ckpt_path = args.checkpoint_path
+    #ckpt_path = args.checkpoint_path
+    ckpt_path = "https://github.com/Siddicus/OCR_Classify/releases/download/1/cls_res50.ckpt"
     modell = train_unet()
     mode = modell.load_from_checkpoint(checkpoint_path=ckpt_path)
     mode.eval()
