@@ -1,4 +1,5 @@
-!pip install segmentation-models-pytorch
+# !pip install segmentation-models-pytorch
+
 import segmentation_models_pytorch as smp
 model = smp.Unet(
     encoder_name="resnet50",        # choose encoder, e.g. mobilenet_v2 or efficientnet-b7
