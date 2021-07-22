@@ -50,7 +50,7 @@ For text recognition purposes, image is pre-processed in two stages:
 
 -> "https://github.com/Siddicus/OCR_Classify/releases/download/1/cls_res50.ckpt"
 
-- Predict.py
+- Predict.py Usage
 ```
 def parse_args():
     import argparse
@@ -66,5 +66,23 @@ def parse_args():
 if __name__ == "__main__":
     args = parse_args()
     localization,image_array= main(args)
+    #localization -> ["image_name.jpg":[{"type": "text", "geometry": [.1, .1, .5, .15]}, {"type": "qr_code", "geometry": [.85, .85, .95, .95]}],......]
+    # image_array -> numpy array with predictions/plots on the original corresponding image 
+
 ```
--Train.py 
+- Train.py Usage
+
+```
+def parse_args():
+    import argparse
+    parser = argparse.ArgumentParser(description='Model training script',
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('img_folder', type=str, help='path to image folder') # path to the image folder
+    parser.add_argument('label_path', type=str, help='path to label file')  # labels path in json format
+    args = parser.parse_args()
+    return args
+
+if __name__ == "__main__":
+    args = parse_args()
+    main(args)
+```
