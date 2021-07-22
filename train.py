@@ -166,3 +166,31 @@ trainer = pl.Trainer(gpus=-1,max_epochs =5,logger=neptune_logger,check_val_every
 modell = train_unet()
 trainer.fit(modell)
 trainer.save_checkpoint("cls_res50.ckpt")
+
+
+def main(args):
+    # Define your training procedure here
+
+    # script arguments are accessible as follows:
+    # img_path = args.img_path
+    # ckpt_path = args.checkpoint_path
+    pass
+
+def parse_args():
+    import argparse
+    parser = argparse.ArgumentParser(description='Model training script',
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
+    parser.add_argument('img_folder', type=str, help='path to image folder')
+    parser.add_argument('label_path', type=str, help='path to label file')
+    # Add any other argument you deem relevant here
+    # Here is how to add the learning rate as a script argument for instance
+    # parser.add_argument('--lr', type=float, default=0.001, help='learning rate for the optimizer')
+    args = parser.parse_args()
+
+    return args
+
+
+if __name__ == "__main__":
+    args = parse_args()
+    main(args)
