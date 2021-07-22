@@ -15,3 +15,6 @@
 <img src="https://raw.githubusercontent.com/Siddicus/OCR_Classify/master/metricss.JPG" >
 
 ## Arriving at the bounding boxes during prediction phase
+Using the function *cv2contour()* in predict.py, bounding boxes for artefacts are obtained using recursive trick as shown below:
+
+<img src="https://raw.githubusercontent.com/Siddicus/OCR_Classify/master/sad.JPG" >
