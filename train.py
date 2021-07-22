@@ -1,6 +1,5 @@
 !pip install segmentation-models-pytorch
 !pip install pytorch-lightning
-!pip install neptune-client
 
 from model import model
 import segmentation_models_pytorch as smp
@@ -10,16 +9,12 @@ import sys
 import random
 import logging
 import cv2
-import warnings
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from torch.utils.data import Dataset,DataLoader
-from pytorch_lightning import Callback
 from itertools import chain
-import logging
 from pytorch_lightning.loggers import NeptuneLogger
 import re
-import time
 import pytorch_lightning as pl
 import torch.nn.functional as F
 import torch.nn as nn
@@ -28,8 +23,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from collections import defaultdict
 import pytesseract
-import neptune.new as neptune
-from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 
 ##############################################################################################################################################################################
 def mask_label(js,v) -> 'masked image.shape= (3,1024,800)' :
@@ -55,7 +48,7 @@ def mask_label(js,v) -> 'masked image.shape= (3,1024,800)' :
             cv2.rectangle(arr[2],(i['geometry'][0][0],i['geometry'][0][1]),(i['geometry'][1][0],i['geometry'][1][1]), (255,255,255), -1)    
     return np.where(arr==255,1,0)  
   
-  class img_dataset(Dataset):
+class img_dataset(Dataset):
     def __init__(self,path:str,label:str,val=False):
         """
         Args:
