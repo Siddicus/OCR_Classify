@@ -1,5 +1,5 @@
-!pip install segmentation-models-pytorch
-!pip install pytorch-lightning
+#!pip install segmentation-models-pytorch
+#!pip install pytorch-lightning
 
 from model import model
 import segmentation_models_pytorch as smp
@@ -88,7 +88,7 @@ class img_dataset(Dataset):
         super().__init__()
 
     def forward(self, inputs, targets):       
-        inputs = F.sigmoid(inputs)       
+        inputs = torch.sigmoid(inputs)       
         inputs = inputs.view(-1)
         targets = targets.view(-1)
         
@@ -99,7 +99,7 @@ class img_dataset(Dataset):
         return Dice_BCE
     
 def dice_metrics(ar1,ar2):     
-    ar1 = F.sigmoid(ar1)    
+    ar1 = torch.sigmoid(ar1)    
     co = (ar1*ar2).sum()
     return (2*co)/(torch.sum(ar1+ar2)+1e-8)
   
@@ -123,7 +123,7 @@ def dice_metrics(ar1,ar2):
         output = self(x)       
         loss = self.criterion(output,y)        
         self.log('train_loss_step',loss)
-        self.log('train_dice_metric',dice_metrics(output,y,eps=1e-8))       
+        self.log('train_dice_metric',dice_metrics(output,y))       
         return loss
     
     def training_epoch_end(self,outputs):                  
@@ -134,7 +134,7 @@ def dice_metrics(ar1,ar2):
         x,y = batch["image"],batch["label"]
         output = self(x)       
         val_loss = self.criterion(output,y)       
-        self.log('val_dice_metric',dice_metrics(output,y,eps=1e-8))
+        self.log('val_dice_metric',dice_metrics(output,y))
         self.log('val_loss',val_loss)
         return val_loss
     
@@ -158,7 +158,13 @@ def dice_metrics(ar1,ar2):
 def main(args):    
     im_folder = args.img_folder
     l_path = args.label_path
-    trainer = pl.Trainer(gpus=-1,max_epochs =5,check_val_every_n_epoch=1)
+    new = os.listdir(im_folder)
+    global train_set, val_set
+    train_set, val_set = train_test_split(new, test_size=0.10, random_state=44)
+    try:
+        trainer = pl.Trainer(gpus=-1,max_epochs =5,check_val_every_n_epoch=1)
+    except:
+        trainer = pl.Trainer(gpus=None,max_epochs =5,check_val_every_n_epoch=1)
     modell = train_unet(image_folder=im_folder,label_json=l_path)
     trainer.fit(modell)
     trainer.save_checkpoint("cls_res50.ckpt")
@@ -169,9 +175,6 @@ def parse_args():
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('img_folder', type=str, help='path to image folder')
     parser.add_argument('label_path', type=str, help='path to label file')
-    # Add any other argument you deem relevant here
-    # Here is how to add the learning rate as a script argument for instance
-    # parser.add_argument('--lr', type=float, default=0.001, help='learning rate for the optimizer')
     args = parser.parse_args()
     return args
 
