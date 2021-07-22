@@ -45,3 +45,6 @@ For text recognition purposes, image is pre-processed in two stages:
  - image rescaling  
 
 <img src="https://raw.githubusercontent.com/Siddicus/OCR_Classify/master/plottrue.JPG" >
+
+## Checkpoint URL
+-> "https://github.com/Siddicus/OCR_Classify/releases/download/1/cls_res50.ckpt"
