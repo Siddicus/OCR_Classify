@@ -2,7 +2,7 @@
 
 ## Approach
 
-<img src="https://raw.githubusercontent.com/Siddicus/OCR_Classify/master/dl.JPG" >
+<img src="https://raw.githubusercontent.com/Siddicus/OCR_Classify/master/images/dl.JPG" >
 
 - The model ([Segmentation model].https://github.com/qubvel/segmentation_models.pytorch.) with weigths of 'imagenet' as starting point is trained on our dataset as it bears the flexibility to choose various encoders with flexible choice of depth of encoders. Although, conclusively, since the features required are limited in principle to classify : text, bar_code and qr_code, almost any shallow encoder could be just as good. 
 - Label masks are constructed using the labels(with images as key and annotations as value) were provided.
@@ -12,12 +12,12 @@
 
 ## Training and Validation:
 
-<img src="https://raw.githubusercontent.com/Siddicus/OCR_Classify/master/metricss.JPG" >
+<img src="https://raw.githubusercontent.com/Siddicus/OCR_Classify/master/images/metricss.JPG" >
 
 ## Arriving at the bounding boxes during prediction phase
 Using the function *cv2contour()* in predict.py, bounding boxes for artefacts are obtained using recursive trick as shown below:
 
-<img src="https://raw.githubusercontent.com/Siddicus/OCR_Classify/master/sad.JPG" >
+<img src="https://raw.githubusercontent.com/Siddicus/OCR_Classify/master/images/sad.JPG" >
 
 ## Input - Output
 - Default argument text_on_plot is True for the function *inference*
@@ -28,9 +28,9 @@ for i in image_array:
     plt.imshow(i)
     plt.show()
 ``` 
-<img src="https://raw.githubusercontent.com/Siddicus/OCR_Classify/master/ocr.JPG" >
+<img src="https://raw.githubusercontent.com/Siddicus/OCR_Classify/master/images/ocr.JPG" >
 
-<img src="https://raw.githubusercontent.com/Siddicus/OCR_Classify/master/ocr2.JPG" >
+<img src="https://raw.githubusercontent.com/Siddicus/OCR_Classify/master/images/ocr2.JPG" >
 
 - text_on_plot=True returns
 ```
@@ -44,7 +44,7 @@ For text recognition purposes, image is pre-processed in two stages:
  - image thresholding
  - image rescaling  
 
-<img src="https://raw.githubusercontent.com/Siddicus/OCR_Classify/master/plottrue.JPG" >
+<img src="https://raw.githubusercontent.com/Siddicus/OCR_Classify/master/images/plottrue.JPG" >
 
 ## Checkpoint URL
 -> "https://github.com/Siddicus/OCR_Classify/releases/download/1/cls_res50.ckpt"
