@@ -47,4 +47,24 @@ For text recognition purposes, image is pre-processed in two stages:
 <img src="https://raw.githubusercontent.com/Siddicus/OCR_Classify/master/images/plottrue.JPG" >
 
 ## Checkpoint URL
+
 -> "https://github.com/Siddicus/OCR_Classify/releases/download/1/cls_res50.ckpt"
+
+- Predict.py
+```
+def parse_args():
+    import argparse
+    parser = argparse.ArgumentParser(description='Inference script',
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
+    parser.add_argument('img_path', type=str, help='path to the image') # link to the folder contianing the images
+    parser.add_argument('checkpoint_path', type=str, help='path to your model checkpoint') # URL of checkpoint given above
+    args = parser.parse_args()
+    return args
+
+
+if __name__ == "__main__":
+    args = parse_args()
+    localization,image_array= main(args)
+```
+-Train.py 
