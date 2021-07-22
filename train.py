@@ -2,6 +2,7 @@
 !pip install pytorch-lightning
 !pip install neptune-client
 
+from model import model
 import segmentation_models_pytorch as smp
 import json
 import os
