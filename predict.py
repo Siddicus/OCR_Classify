@@ -1,4 +1,25 @@
 from model import model
+import segmentation_models_pytorch as smp
+import json
+import os
+import sys
+import random
+import logging
+import cv2
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from torch.utils.data import Dataset,DataLoader
+from itertools import chain
+from pytorch_lightning.loggers import NeptuneLogger
+import re
+import pytorch_lightning as pl
+import torch.nn.functional as F
+import torch.nn as nn
+import torch
+import numpy as np
+import matplotlib.pyplot as plt
+from collections import defaultdict
+import pytesseract
 ##############################################################################################################################################################################
 def cv2contour(args):   
     image = args    
@@ -47,7 +68,7 @@ class test_img_dataset(Dataset):
         threshold = threshold[np.newaxis,:]       
         return {"image":torch.tensor(threshold,dtype = torch.float32),"name":self.root[idx]}
     
-def inference(test_dataloader,text_on_plot=True):
+def inference(test_dataloader,test_dataset,text_on_plot=False):
     output_labels = []
     out_images = []
     for n in test_dataloader:
@@ -60,7 +81,7 @@ def inference(test_dataloader,text_on_plot=True):
         db_image = u.copy()
         cc= cv2contour(u)    
         out = mode(n["image"]).squeeze().detach()    
-        out = F.sigmoid(out).numpy()     
+        out = torch.sigmoid(out).numpy()     
         dop = {0:"text",1:"bar_code",2:"qr_code"}        
         samp = []
         for i in cc:
@@ -111,6 +132,7 @@ def main(args):
     img_path = args.img_path
     ckpt_path = args.checkpoint_path    
     modell = train_unet()
+    global mode
     mode = modell.load_from_checkpoint(checkpoint_path=ckpt_path)
     mode.eval()
     test_dataset =test_img_dataset(path=img_path)
@@ -126,7 +148,6 @@ def parse_args():
     parser.add_argument('img_path', type=str, help='path to the image')
     parser.add_argument('checkpoint_path', type=str, help='path to your model checkpoint')
     args = parser.parse_args()
-
     return args
 
 
