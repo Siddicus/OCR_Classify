@@ -10,7 +10,6 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from torch.utils.data import Dataset,DataLoader
 from itertools import chain
-from pytorch_lightning.loggers import NeptuneLogger
 import re
 import pytorch_lightning as pl
 import torch.nn.functional as F
@@ -97,7 +96,7 @@ def inference(test_dataloader,test_dataset,text_on_plot=False):
                     ims = cv2.resize(ims,None,fx=1.8,fy=1.8, interpolation=cv2.INTER_CUBIC)
                     ocr = pytesseract.image_to_string(ims)
                     cv2.rectangle(uy,(i[0],i[1]),([i[2],i[3]]),134,thickness = 1)
-                    if text_on_plot==True:
+                    if text_on_plot:
                         cv2.putText(uy, f"{dop[ar.index(np.max(ar))]}-{ocr.rstrip()}" , (i[0], i[1]-4), cv2.FONT_HERSHEY_SIMPLEX, 0.3, 236, 1)
                     else:
                         cv2.putText(uy, f"{dop[ar.index(np.max(ar))]}" , (i[0], i[1]-4), cv2.FONT_HERSHEY_SIMPLEX, 0.3, 236, 1)              
