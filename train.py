@@ -31,7 +31,7 @@ import pytesseract
 import neptune.new as neptune
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 
-
+##############################################################################################################################################################################
 def mask_label(js,v) -> 'masked image.shape= (3,1024,800)' :
     """
     
@@ -53,9 +53,7 @@ def mask_label(js,v) -> 'masked image.shape= (3,1024,800)' :
             cv2.rectangle(arr[1],(i['geometry'][0][0],i['geometry'][0][1]),(i['geometry'][1][0],i['geometry'][1][1]), (255,255,255), -1)
         else:
             cv2.rectangle(arr[2],(i['geometry'][0][0],i['geometry'][0][1]),(i['geometry'][1][0],i['geometry'][1][1]), (255,255,255), -1)    
-    return np.where(arr==255,1,0)
-  
-  
+    return np.where(arr==255,1,0)  
   
   class img_dataset(Dataset):
     def __init__(self,path:str,label:str,val=False):
@@ -117,9 +115,11 @@ def dice_metrics(ar1,ar2):
 #Training
 
  class train_unet(pl.LightningModule):
-    def __init__(self):
+    def __init__(self,image_folder,label_json):
         super().__init__()
-        self.model = model        
+        self.model = model
+        self.image_folder = image_folder
+        self.label_json = label_json
         self.criterion = DiceBCELoss()       
         
     def forward(self,x):        
@@ -129,68 +129,58 @@ def dice_metrics(ar1,ar2):
         x,y = batch["image"],batch["label"]
         output = self(x)       
         loss = self.criterion(output,y)        
-        self.logger.experiment.log_metric('train_loss_step',loss)
-        self.logger.experiment.log_metric('train_dice_metric',dice_metrics(output,y,eps=1e-8))
-        
+        self.log('train_loss_step',loss)
+        self.log('train_dice_metric',dice_metrics(output,y,eps=1e-8))       
         return loss
     
     def training_epoch_end(self,outputs):                  
         avg_train_loss = torch.stack([x["loss"] for x in outputs]).mean()
-        self.logger.experiment.log_metric('train_loss_epoch',avg_train_loss)
+        self.log('train_loss_epoch',avg_train_loss)
     
     def validation_step(self,batch,batch_idx):
         x,y = batch["image"],batch["label"]
         output = self(x)       
-        val_loss = self.criterion(output,y)        
-        self.logger.experiment.log_metric('val_loss_step',val_loss)
-        self.logger.experiment.log_metric('val_dice_metric',dice_metrics(output,y,eps=1e-8))
+        val_loss = self.criterion(output,y)       
+        self.log('val_dice_metric',dice_metrics(output,y,eps=1e-8))
         self.log('val_loss',val_loss)
         return val_loss
     
     def validation_epoch_end(self,validation_step_outputs):
         av_loss = torch.stack([x for x in validation_step_outputs]).mean()  
-        self.logger.experiment.log_metric('val_loss_epoch',av_loss)
-        
+        self.log('val_loss_epoch',av_loss)        
         
     def train_dataloader(self):
-        train_dataset = img_dataset(path = "../input/zipfolder",label="../input/labelimages/labels-a0349fd8.json",val=False)
+        train_dataset = img_dataset(path =self.image_folder ,label=self.label_json,val=False)
         return DataLoader(train_dataset,batch_size=2,num_workers=4)
     
     def val_dataloader(self):
-        val_dataset = img_dataset(path = "../input/zipfolder",label="../input/labelimages/labels-a0349fd8.json",val=True)
+        val_dataset = img_dataset(path = self.image_folder,label=self.label_json,val=True)
         return DataLoader(val_dataset,batch_size=1,num_workers = 4) 
     
     def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(),lr = 0.0001) 
-      
-trainer = pl.Trainer(gpus=-1,max_epochs =5,logger=neptune_logger,check_val_every_n_epoch=1)
-modell = train_unet()
-trainer.fit(modell)
-trainer.save_checkpoint("cls_res50.ckpt")
+        return torch.optim.Adam(self.parameters(),lr = 0.0001)       
+############################################################################################################################################################################
+############################################################################################################################################################################
 
-
-def main(args):
-    # Define your training procedure here
-
-    # script arguments are accessible as follows:
-    # img_path = args.img_path
-    # ckpt_path = args.checkpoint_path
-    pass
+def main(args):    
+    im_folder = args.img_folder
+    l_path = args.label_path
+    trainer = pl.Trainer(gpus=-1,max_epochs =5,check_val_every_n_epoch=1)
+    modell = train_unet(image_folder=im_folder,label_json=l_path)
+    trainer.fit(modell)
+    trainer.save_checkpoint("cls_res50.ckpt")
 
 def parse_args():
     import argparse
     parser = argparse.ArgumentParser(description='Model training script',
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-
     parser.add_argument('img_folder', type=str, help='path to image folder')
     parser.add_argument('label_path', type=str, help='path to label file')
     # Add any other argument you deem relevant here
     # Here is how to add the learning rate as a script argument for instance
     # parser.add_argument('--lr', type=float, default=0.001, help='learning rate for the optimizer')
     args = parser.parse_args()
-
     return args
-
 
 if __name__ == "__main__":
     args = parse_args()
