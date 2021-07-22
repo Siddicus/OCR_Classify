@@ -32,13 +32,16 @@ for i in image_array:
 
 <img src="https://raw.githubusercontent.com/Siddicus/OCR_Classify/master/ocr2.JPG" >
 
-- text_on_plot=True returns:
+- text_on_plot=True returns
 ```
 localization,image_array=inference(test_dataloader,text_on_plot=True)
 for i in image_array:
     figure(figsize=(20, 44), dpi=50)
     plt.imshow(i)
     plt.show()
-``` 
+```
+For text recognition purposes, image is pre-processed in two stages:
+ - image thresholding
+ - image rescaling  
 
 <img src="https://raw.githubusercontent.com/Siddicus/OCR_Classify/master/plottrue.JPG" >
