@@ -78,7 +78,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Model training script',
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('img_folder', type=str, help='path to image folder') # path to the image folder
-    parser.add_argument('label_path', type=str, help='path to label file')  # labels path in json format
+    parser.add_argument('label_path', type=str, help='path to label file')  # label's(in json format) path 
     args = parser.parse_args()
     return args
 
