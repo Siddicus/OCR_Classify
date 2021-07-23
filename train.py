@@ -69,6 +69,8 @@ class img_dataset(Dataset):
         return len(self.root)    
     def __getitem__(self,idx):
         image = cv2.imread(os.path.join(self.path,self.root[idx]))
+        if image.shape[:2]!= (1024,800):
+            image= cv2.resize(pat,(800,1024))
         gray = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
         th3=cv2.adaptiveThreshold(gray,255,cv2.ADAPTIVE_THRESH_MEAN_C,\
             cv2.THRESH_BINARY,11,3)
