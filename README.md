@@ -66,7 +66,7 @@ def parse_args():
 if __name__ == "__main__":
     args = parse_args()
     localization,image_array= main(args)
-    #localization -> ["image_name.jpg":[{"type": "text", "geometry": [.1, .1, .5, .15]}, {"type": "qr_code", "geometry": [.85, .85, .95, .95]}],......]
+    #localization -> ["image_name.jpg":[{"type": "text", "geometry": [.1, .1, .5, .15],"value":"word1"}, {"type": "qr_code", "geometry": [.85, .85, .95, .95],"value":None}],......]
     # image_array -> numpy array with predictions/plots on the original corresponding image 
 
 ```
